@@ -1,4 +1,5 @@
-$myWidyh: 60px;
+$myWidyh: 80px;
+$primaryColor: DeepPink;
 @import url('https://fonts.googleapis.com/css?family=Barlow');
 body {
   font-family: 'Barlow', sans-serif;
@@ -11,29 +12,29 @@ body {
   grid-template-columns: $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh;
   grid-gap: 6px;
   padding: 10px;
-  background-color: lighten(grey, 45%);
+  background-color: lighten($primaryColor, 45%);
   text-align: center;
-  border: 1px solid lighten(grey, 30%);
+  border: 1px solid lighten($primaryColor, 30%);
 }
 .pads {
   height: $myWidyh/2;
   line-height: $myWidyh/2.3;
-  background-color: lighten(grey, 40%);
-  border: 1px solid lighten(grey, 30%);
+  background-color: lighten($primaryColor, 40%);
+  border: 1px solid lighten($primaryColor, 30%);
   border-radius: 6px;
   cursor: default;
   &:hover {
-    background-color: lighten(grey, 45%);
+    background-color: lighten($primaryColor, 45%);
   }
 }
 #display {
-  height: $myWidyh;  
+  height: $myWidyh;
   padding: 12px;
   grid-column: 1/7;
   text-align: left;
-  background-color: lighten(grey, 50%);
+  background-color: lighten($primaryColor, 50%);
   font-size: 22px;
-  border: 1px solid lighten(grey, 40%);
+  border: 1px solid lighten($primaryColor, 40%);
 }
 #equals {
   grid-column: 5/7;

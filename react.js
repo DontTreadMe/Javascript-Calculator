@@ -1,135 +1,149 @@
 const keys = [{
   padId: 'seven',
-  unicode: "\u0037",
-  value: 7
+  unicode: '\u0037',
+  digit: 7
 }, {
   padId: 'eight',
-  unicode: "\u0038",
-  value: 8
+  unicode: '\u0038',
+  digit: 8
 }, {
   padId: 'nine',
-  unicode: "\u0039",
-  value: 9
+  unicode: '\u0039',
+  digit: 9
 }, {
-  padId: 'div  padIde',
-  unicode: "\u00F7",
-  value: ''
+  padId: 'divide',
+  unicode: '\u00F7',
+  digit: ''
 }, {
   padId: 'undo',
-  unicode: "\u21B6",
-  value: ''
+  unicode: '\u21B6',
+  digit: ''
 }, {
   padId: 'clear',
-  unicode: "\u0043",
-  value: ''
+  unicode: '\u0043',
+  digit: ''
 }, {
   padId: 'four',
-  unicode: "\u0034",
-  value: 4
+  unicode: '\u0034',
+  digit: 4
 }, {
   padId: 'five',
-  unicode: "\u0035",
-  value: 5
+  unicode: '\u0035',
+  digit: 5
 }, {
   padId: 'six',
-  unicode: "\u0036",
-  value: 6
+  unicode: '\u0036',
+  digit: 6
 }, {
   padId: 'multiply',
-  unicode: "\u00D7",
-  value: ''
+  unicode: '\u00D7',
+  digit: ''
 }, {
-  padId: '',
-  unicode: "\u0028",
-  value: ''
+  padId: 'leftBrecket',
+  unicode: '\u0028',
+  digit: ''
 }, {
-  padId: '',
-  unicode: "\u0029",
-  value: ''
+  padId: 'rightBrecket',
+  unicode: '\u0029',
+  digit: ''
 }, {
   padId: 'one',
-  unicode: "\u0031",
-  value: 1
+  unicode: '\u0031',
+  digit: 1
 }, {
   padId: 'two',
-  unicode: "\u0032",
-  value: 2
+  unicode: '\u0032',
+  digit: 2
 }, {
   padId: 'three',
-  unicode: "\u0033",
-  value: 3
+  unicode: '\u0033',
+  digit: 3
 }, {
   padId: 'subtract',
-  unicode: "\u2212",
-  value: ''
+  unicode: '\u2212',
+  digit: ''
 }, {
-  padId: '',
-  unicode: "x\u00B2",
-  value: ''
+  padId: 'square',
+  unicode: 'x\u00B2',
+  digit: ''
 }, {
-  padId: '',
-  unicode: "\u221A",
-  value: ''
+  padId: 'squareRoot',
+  unicode: '\u221A',
+  digit: ''
 }, {
   padId: 'zero',
-  unicode: "\u0030",
-  value: 0
+  unicode: '\u0030',
+  digit: 0
 }, {
   padId: 'decimal',
-  unicode: "\u002E",
-  value: ''
+  unicode: '\u002E',
+  digit: ''
 }, {
-  padId: '',
-  unicode: "\u0025",
-  value: ''
+  padId: 'percent',
+  unicode: '\u0025',
+  digit: ''
 }, {
   padId: 'add',
-  unicode: "\u002B",
-  value: ''
+  unicode: '\u002B',
+  digit: ''
 }, {
   padId: 'equals',
-  unicode: "\u003D",
-  value: ''
+  unicode: '\u003D',
+  digit: ''
 }];
-
-
+const initializedValue = '0';
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expression: ''
+      displayCalc: initializedValue,
+      accumulator: '',
+      numbers: []
     }
-    this.handleClick = this.handleClick.bind(this);
+    this.reciveData = this.reciveData.bind(this);
   }
- handleClick() {
-   
- }
+  reciveData(value) {
+    value.padId === 'clear' ? this.setState({displayCalc: initializedValue, accumulator: ''}) :  
+    this.setState({accumulator: this.state.accumulator + value.unicode}, 
+    () => this.setState({displayCalc: this.state.accumulator}));
+  }
   render() {
     const arrToRender = keys.map(x => 
-      <Pad padId={x.padId} unicode={x.unicode} />)
+      <Pad padId={x.padId} unicode={x.unicode} digit={x.digit} reciveData={this.reciveData} />)
     return(
       <div id="calc">
-        <Display />
-        
-          {arrToRender}
-        
+        <Display displayCalc={this.state.displayCalc} />        
+          {arrToRender}        
       </div>
     );
   }
 }
-
-const Pad = (props) => {
-  return(
-    <div id={props.padId} className="pads">
-      {props.unicode}
-    </div>
-  );
+class Pad extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    const value = {
+      padId: this.props.padId,
+      unicode: this.props.unicode,
+      digit: this.props.digit
+    };
+    //console.log('value');
+    this.props.reciveData(value);
+  }
+  render() {
+    return(
+      <div id={this.props.padId} className="pads" onClick={this.handleClick}>
+        {this.props.unicode}
+      </div>
+    );
+  }
 }
-
 const Display = (props) => {
   return (
-    <div id="display">
-      7894561230
+    <div id="display" >
+      {props.displayCalc}
     </div>
   );
 }
