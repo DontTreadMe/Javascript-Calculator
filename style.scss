@@ -1,0 +1,40 @@
+$myWidyh: 60px;
+@import url('https://fonts.googleapis.com/css?family=Barlow');
+body {
+  font-family: 'Barlow', sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+#calc {
+  display: inline-grid;
+  grid-template-columns: $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh;
+  grid-gap: 6px;
+  padding: 10px;
+  background-color: lighten(grey, 45%);
+  text-align: center;
+  border: 1px solid lighten(grey, 30%);
+}
+.pads {
+  height: $myWidyh/2;
+  line-height: $myWidyh/2.3;
+  background-color: lighten(grey, 40%);
+  border: 1px solid lighten(grey, 30%);
+  border-radius: 6px;
+  cursor: default;
+  &:hover {
+    background-color: lighten(grey, 45%);
+  }
+}
+#display {
+  height: $myWidyh;  
+  padding: 12px;
+  grid-column: 1/7;
+  text-align: left;
+  background-color: lighten(grey, 50%);
+  font-size: 22px;
+  border: 1px solid lighten(grey, 40%);
+}
+#equals {
+  grid-column: 5/7;
+}
