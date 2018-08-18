@@ -102,7 +102,7 @@ class App extends React.Component {
     }
     this.reciveData = this.reciveData.bind(this);
   }
-  reciveData(value) {
+  reciveData(value) { //add digit & operators to array; regEx for reduce.
     value.padId === 'clear' ? this.setState({displayCalc: initializedValue, accumulator: ''}) :  
     this.setState({accumulator: this.state.accumulator + value.unicode}, 
     () => this.setState({displayCalc: this.state.accumulator}));
