@@ -26,6 +26,9 @@ body {
   &:hover {
     background-color: lighten($primaryColor, 45%);
   }
+  &:active {
+    background-color: lighten($primaryColor, 30%);
+  }
 }
 #display {
   height: $myWidyh;
