@@ -1,4 +1,4 @@
-const keys = [{
+const KEYS = [{
   padId: 'seven',
   unicode: '\u0037',
   digit: 7
@@ -91,33 +91,31 @@ const keys = [{
   unicode: '\u003D',
   digit: ''
 }];
-const initializedValue = '0';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      displayCalc: initializedValue,
+    this.state = {      
       accumulator: '',
       numbers: []
     }
     this.reciveData = this.reciveData.bind(this);
   }
   reciveData(value) { //add digit & operators to array; regEx for reduce.
-    value.padId === 'clear' ? this.setState({displayCalc: initializedValue, accumulator: ''}) :  
-    this.setState({accumulator: this.state.accumulator + value.unicode}, 
-    () => this.setState({displayCalc: this.state.accumulator}));
+    value.padId === 'clear' ? this.setState({accumulator: ''}) :  
+    this.setState({accumulator: this.state.accumulator + value.unicode});
   }
   render() {
-    const arrToRender = keys.map(x => 
+    const arrToRender = this.props.keys.map(x => 
       <Pad padId={x.padId} unicode={x.unicode} digit={x.digit} reciveData={this.reciveData} />)
     return(
       <div id="calc">
-        <Display displayCalc={this.state.displayCalc} />        
+        <Display accumulator={this.state.accumulator} />        
           {arrToRender}        
       </div>
     );
   }
 }
+
 class Pad extends React.Component {
   constructor(props) {
     super(props);
@@ -143,8 +141,8 @@ class Pad extends React.Component {
 const Display = (props) => {
   return (
     <div id="display" >
-      {props.displayCalc}
+      {props.accumulator === '' ? '0' : props.accumulator}
     </div>
   );
 }
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App keys={KEYS}/>, document.getElementById('root'));
