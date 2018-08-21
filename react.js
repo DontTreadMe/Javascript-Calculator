@@ -1,72 +1,71 @@
-const KEYS = [
-  {
+const KEYS = [{
   padId: 'clear',
   unicode: '\u0043',
-  digit: undefined
+  pad: undefined
 }, {
   padId: 'divide',
   unicode: '\u002F',
-  digit: 'operator'
+  pad: '\u00F7'
 }, {
   padId: 'multiply',
   unicode: '\u002A',
-  digit: 'operator'
+  pad: '\u00D7'
 }, {
   padId: 'subtract',
   unicode: '\u002D',
-  digit: 'operator'
+  pad: '\u2212'
 }, {
   padId: 'seven',
   unicode: '\u0037',
-  digit: 7
+  pad: undefined
 }, {
   padId: 'eight',
   unicode: '\u0038',
-  digit: 8
+  pad: undefined
 }, {
   padId: 'nine',
   unicode: '\u0039',
-  digit: 9
+  pad: undefined
 }, {
   padId: 'add',
   unicode: '\u002B',
-  digit: 'operator'
+  pad: '\uFF0B'
 }, {
   padId: 'four',
   unicode: '\u0034',
-  digit: 4
+  pad: undefined
 }, {
   padId: 'five',
   unicode: '\u0035',
-  digit: 5
+  pad: undefined
 }, {
   padId: 'six',
   unicode: '\u0036',
-  digit: 6
+  pad: undefined
 }, {
   padId: 'one',
   unicode: '\u0031',
-  digit: 1
+  pad: undefined
 }, {
   padId: 'two',
   unicode: '\u0032',
-  digit: 2
+  pad: undefined
 }, {
   padId: 'three',
   unicode: '\u0033',
-  digit: 3
+  pad: undefined
 }, {
   padId: 'equals',
   unicode: '\u003D',
-  digit: undefined
+  pad: '\uFF1D'
 }, {
   padId: 'zero',
   unicode: '\u0030',
-  digit: 0
+  pad: '\uFF10'
 }, {
   padId: 'decimal',
   unicode: '\u002E',
-  digit: undefined
+  pad: undefined
 }];
 const NUMBERS = ['\u0037', '\u0038', '\u0039', '\u0034', '\u0035', '\u0036', '\u0031', '\u0032', '\u0033'];
 const OPERATORS = ['\u002F', '\u002A', '\u002D', '\u002B'];
@@ -74,6 +73,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      newCalc: false,
+      error: '',
       archive: [],
       expression: [],
       portion: ''
@@ -86,9 +87,9 @@ class App extends React.Component {
     this.handleResult = this.handleResult.bind(this);
     this.handleDecimal = this.handleDecimal.bind(this);    
   }
-  liftData(value) {
-    value.padId === 'clear' ? this.handleClear() : 
-      value.digit === 'operator' ? this.handleOperators(value) : 
+  liftData(value) {    
+    value.padId === 'clear' ? this.handleClear() :
+      this.props.operators.includes(value.unicode) ? this.handleOperators(value) : 
       value.padId === 'zero' ? this.handleZero(value) : 
       value.padId === 'equals' ? this.handleResult() : 
       value.padId === 'decimal' ? this.handleDecimal() : 
@@ -96,59 +97,120 @@ class App extends React.Component {
   }
   handleClear() {
     this.setState({
+      newCalc: false,
+      error: '',
       archive: [],
       expression: [],
       portion: ''
     });
   }
-  handleOperators(value) {    
+  handleOperators(value) {
+    this.setState ({newCalc: false});
     const expr = this.state.expression;
     const port = this.state.portion;
     this.props.operators.includes(port) ? 
       this.setState({expression: expr.slice(0, expr.length-1).concat(value.unicode), portion: value.unicode}) : 
-      this.setState({expression: [...expr, port, value.unicode], portion: value.unicode});
+      this.setState({expression: [...expr, value.unicode], portion: value.unicode});
   }
   handleNumders(value) {
-    this.state.archive.length !== 0 && this.state.expression.length === 0 ? 
-      this.setState({portion: value.unicode}) :
-      this.props.operators.includes(this.state.portion) ? 
-      this.setState({portion: value.unicode}) :
-      this.state.portion === '\u0030' ? 
-      this.setState({portion: value.unicode}) :
-      this.setState({portion: this.state.portion + value.unicode});
+    this.state.newCalc === true ? 
+      this.setState({
+        newCalc: false,
+        error: '',
+        archive: [],
+        expression: [],
+        portion: ''
+      }, () => this.handleNumders(value)) :    
+    this.state.portion === '\u0030' ? 
+    this.setState({
+      portion: value.unicode,
+      expression: this.state.expression.slice(0, this.state.expression.length-1).concat([value.unicode])
+    }) : 
+    this.props.operators.includes(this.state.portion) ? 
+    this.setState({
+      portion: value.unicode,
+      expression: [...this.state.expression, value.unicode]
+    }) :
+    this.setState({
+      portion: this.state.portion + value.unicode, 
+      expression: [...this.state.expression, value.unicode]
+    });
   }
-  handleZero(value) {    
-    if (this.state.portion !== '\u0030') {
-      this.handleNumders(value);
-    }
+  handleZero(value) {
+    this.state.newCalc === true ? 
+    this.setState({
+      newCalc: false,
+      error: '',
+      archive: [],
+      expression: [],
+      portion: ''
+    }, () => this.handleZero(value)) : 
+    this.state.portion !== '\u0030' ?
+    this.handleNumders(value) : 
+    this.setState({newCalc: false});    //Do Noyhing
   }
   handleDecimal() {
-    if (!this.state.portion.includes('\u002E')) {
-      this.state.portion === '' || this.state.portion === '\u0030' ? 
-      this.setState({portion: '\u0030' + '\u002E'}) : 
-      this.props.operators.includes(this.state.portion) ? 
-      this.setState({portion: '\u0030' + '\u002E'}) :
-      this.setState({portion: this.state.portion + '\u002E'});
-    }
+    this.state.newCalc === true ? 
+    this.setState({
+      newCalc: false,
+      error: '',
+      archive: [],
+      expression: [],
+      portion: ''
+    }, () => this.handleDecimal()) : 
+    this.state.portion.includes('\u002E') ? 
+    this.setState({newCalc: false}) : //Do Noyhing
+    this.state.portion === '' || this.props.operators.includes(this.state.portion) ? 
+    this.setState({
+      portion: '\u0030' + '\u002E',
+      expression: [...this.state.expression, '\u0030' + '\u002E']
+    }) : 
+    this.state.portion === '\u0030' ? 
+    this.setState({
+      portion: '\u0030' + '\u002E',
+      expression: [...this.state.expression, '\u002E']
+    }) : 
+    this.setState({
+      portion: this.state.portion + '\u002E',
+      expression: [...this.state.expression, '\u002E']
+    });
   }
   handleResult() {
+    this.setState({newCalc: true});
+    let toEval = '';
     let port = this.state.portion;
     let expr = this.state.expression;
-    const toEval = [...expr, port].join('');    
-    
-    const result = Math.round(eval(toEval) * 1000000000)/1000000000;
-    this.setState({
-      archive: [...expr, port, '\u003D', result],
-      expression: [],
-      portion: result
-    });    
+    if (this.props.operators.includes(expr[expr.length-1])) {
+      expr = expr.slice(0, expr.length-1);
+    }
+    if (expr.length !== 0) {
+      if (expr[0] === '\u002A' || expr[0] === '\u002F') {
+        this.setState({
+          archive: [...expr],
+          expression: [],
+          portion: '',
+          error: 'Malformed expression'
+        });
+        console.log('expression', this.state.expression);
+        console.log('portion', this.state.portion);
+      } else {
+        toEval = expr.join('');    
+        const result = Math.round(eval(toEval) * 1000000000)/1000000000;
+        this.setState({
+          archive: [...expr, '\u003D', result.toString()],
+          expression: [result.toString()],
+          portion: result.toString()
+        });
+      }
+    }
   }
   render() {
     const arrToRender = this.props.keys.map(x => 
-      <Pad padId={x.padId} unicode={x.unicode} digit={x.digit} liftData={this.liftData} />)
+      <Pad padId={x.padId} unicode={x.unicode} liftData={this.liftData} pad={x.pad} />)
     return(
       <div id="calc">
-        <Display expression={this.state.expression} portion={this.state.portion} archive={this.state.archive} />        
+        <Display expression={this.state.expression} portion={this.state.portion} 
+          archive={this.state.archive} error={this.state.error} newCalc={this.state.newCalc} />        
           {arrToRender}        
       </div>
     );
@@ -162,15 +224,14 @@ class Pad extends React.Component {
   handleClick() {
     const value = {
       padId: this.props.padId,
-      unicode: this.props.unicode,
-      digit: this.props.digit
+      unicode: this.props.unicode
     };
     this.props.liftData(value);
   }
   render() {
     return(
       <div id={this.props.padId} className="pads" onClick={this.handleClick}>
-        {this.props.unicode}
+        {this.props.pad ? this.props.pad : this.props.unicode}
       </div>
     );
   }
@@ -178,11 +239,11 @@ class Pad extends React.Component {
 const Display = (props) => {
   return (
     <div id="display" >
-      <i>{/*{props.archive}*/}</i>
+      <span>{props.newCalc ?  props.archive : props.expression}</span>
       <br />
-      <span>{props.expression.length !== 0 ? props.expression : props.archive}</span>
+      {props.portion ? props.portion : '0'}
       <br />
-      {!props.portion ? '0' : props.portion}
+      <i>{props.error}</i>
     </div>
   );
 }
