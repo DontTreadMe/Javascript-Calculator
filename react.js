@@ -135,7 +135,6 @@ class App extends React.Component {
     let port = this.state.portion;
     let expr = this.state.expression;
     const toEval = [...expr, port].join('');    
-    
     const result = Math.round(eval(toEval) * 1000000000)/1000000000;
     this.setState({
       archive: [...expr, port, '\u003D', result],
@@ -178,8 +177,6 @@ class Pad extends React.Component {
 const Display = (props) => {
   return (
     <div id="display" >
-      <i>{/*{props.archive}*/}</i>
-      <br />
       <span>{props.expression.length !== 0 ? props.expression : props.archive}</span>
       <br />
       {!props.portion ? '0' : props.portion}
