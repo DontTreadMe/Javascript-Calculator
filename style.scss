@@ -1,44 +1,83 @@
-$myWidyh: 80px;
-$primaryColor: DeepPink;
+$myWidyh: 67px;
+$primaryColor: #BD3D3A;
 @import url('https://fonts.googleapis.com/css?family=Barlow');
-body {
-  font-family: 'Barlow', sans-serif;
-}
 * {
   box-sizing: border-box;
 }
+body {
+  font-family: 'Barlow', sans-serif;
+  color: darken($primaryColor, 20%);
+}
+#root {
+  display: flex;
+  height: 90vh;
+  justify-content: center;
+  align-items: center;  
+}
 #calc {
   display: inline-grid;
-  grid-template-columns: $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh $myWidyh;
+  grid-template-columns: $myWidyh $myWidyh $myWidyh $myWidyh;
   grid-gap: 6px;
   padding: 10px;
-  background-color: lighten($primaryColor, 45%);
+  background-color: lighten($primaryColor, 55%);
   text-align: center;
-  border: 1px solid lighten($primaryColor, 30%);
+  border: 1px solid darken($primaryColor, 30%);
+  border-radius: 6px;
 }
 .pads {
-  height: $myWidyh/2;
-  line-height: $myWidyh/2.3;
+  line-height: $myWidyh;
   background-color: lighten($primaryColor, 40%);
   border: 1px solid lighten($primaryColor, 30%);
   border-radius: 6px;
   cursor: default;
+  font-size: 24px;
   &:hover {
     background-color: lighten($primaryColor, 45%);
+    border-color: lighten($primaryColor, 90%);
+    color: lighten($primaryColor, 10%);
   }
   &:active {
     background-color: lighten($primaryColor, 30%);
+    border-color: lighten($primaryColor, 30%);
+    color: darken($primaryColor, 40%);
   }
 }
 #display {
-  height: $myWidyh;
+  min-height: $myWidyh*1.4;
+  margin-bottom: 14px;
   padding: 12px;
-  grid-column: 1/7;
+  grid-column: 1/5;
   text-align: left;
-  background-color: lighten($primaryColor, 50%);
-  font-size: 22px;
+  background-color: lighten($primaryColor, 65%);
+  font-size: 32px;
   border: 1px solid lighten($primaryColor, 40%);
+  word-wrap: break-word;
+}
+span {
+  font-size: 0.8em;
+}
+#add {
+  grid-area: 3/4/5/5;
+  line-height: $myWidyh*2;
 }
 #equals {
-  grid-column: 5/7;
+  grid-area: 5/4/7/5;
+  line-height: $myWidyh*2;  
+  border-bottom-right-radius: 25px;
+}
+#clear, #equals {
+  background-color: lighten($primaryColor, 20%);
+  color: lighten($primaryColor, 80%);  
+  font-weight: 900;
+  &:hover {
+    //color: darken($primaryColor, 30%);
+    background-color: invert($primaryColor);
+  }
+  &:active {
+    background-color: invert($primaryColor, 80%);
+  }
+}
+#zero {
+  grid-column: 1/3;
+  border-bottom-left-radius: 25px;
 }
