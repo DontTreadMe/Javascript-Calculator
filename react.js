@@ -146,8 +146,7 @@ class App extends React.Component {
       portion: ''
     }, () => this.handleZero(value)) : 
     this.state.portion !== '\u0030' ?
-    this.handleNumders(value) : 
-    this.setState({newCalc: false});    //Do Noyhing
+    this.handleNumders(value) : null        //Do Noyhing
   }
   handleDecimal() {
     this.state.newCalc === true ? 
@@ -159,7 +158,7 @@ class App extends React.Component {
       portion: ''
     }, () => this.handleDecimal()) : 
     this.state.portion.includes('\u002E') ? 
-    this.setState({newCalc: false}) : //Do Noyhing
+    null : //Do Noyhing
     this.state.portion === '' || this.props.operators.includes(this.state.portion) ? 
     this.setState({
       portion: '\u0030' + '\u002E',
@@ -191,8 +190,6 @@ class App extends React.Component {
           portion: '',
           error: 'Malformed expression'
         });
-        console.log('expression', this.state.expression);
-        console.log('portion', this.state.portion);
       } else {
         toEval = expr.join('');    
         const result = Math.round(eval(toEval) * 1000000000)/1000000000;
@@ -205,12 +202,17 @@ class App extends React.Component {
     }
   }
   render() {
+    const archive = this.state.archive.map(x => 
+      x.replace(/\u002F/g, '\u00F7').replace(/\u002A/g, '\u00D7'));
+    const expression = this.state.expression.map(x => 
+      x.replace(/\u002F/g, '\u00F7').replace(/\u002A/g, '\u00D7'));
+    const portion = this.state.portion.replace(/\u002F/g, '\u00F7').replace(/\u002A/g, '\u00D7');
     const arrToRender = this.props.keys.map(x => 
       <Pad padId={x.padId} unicode={x.unicode} liftData={this.liftData} pad={x.pad} />)
     return(
       <div id="calc">
-        <Display expression={this.state.expression} portion={this.state.portion} 
-          archive={this.state.archive} error={this.state.error} newCalc={this.state.newCalc} />        
+        <Display expression={expression} portion={portion} archive={archive} 
+          error={this.state.error} newCalc={this.state.newCalc} />        
           {arrToRender}        
       </div>
     );
