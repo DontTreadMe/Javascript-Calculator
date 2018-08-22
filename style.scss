@@ -1,5 +1,5 @@
 $myWidyh: 67px;
-$primaryColor: #3f475a;
+$primaryColor: #515F63;
 @import url('https://fonts.googleapis.com/css?family=Barlow');
 * {
   box-sizing: border-box;
@@ -10,7 +10,7 @@ body {
 }
 #root {
   display: flex;
-  height: 90vh;
+  height: 100vh;
   justify-content: center;
   align-items: center;  
 }
